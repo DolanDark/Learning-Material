@@ -1,0 +1,209 @@
+\?
+\q
+psql
+psql -h localhost -p 5432 -U dolan myydb
+\l
+CREATE DATABASE <database_name>;
+\c <database_name>
+DROP DATABASE <database name>;
+\d
+\dt
+\d <table name>
+\i /User/directory/anotherdirectory/sqlfile
+
+CREATE TABLE <tablename> ( id BIGSERIAL NOT NULL PRIMARY KEY,
+	first_name VARCHAR(50)NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	gender VARCHAR(7) NOT NULL,
+	date_of_birth DATE NOT NULL,
+	country VARCHAR(50),
+	email VARCHAR(150) ) 
+
+DROP TABLE <table name>;
+
+INSERT INTO <tabelname> (first_name, last_name, gender, date_of_birth) VALUES ('Dolan', 'Dark', 'Male', date '1969-04-20' ); 
+
+use mockaroo to generate dummy data
+
+SELECT * FROM <tablename>;
+
+SELECT country FROM <tablename>;
+
+SELECT * FROM <tablename> ORDER BY country;
+
+SELECT * FROM <tablename> ORDER BY first_name DESC;
+
+SELECT * FROM <tablename> ORDER BY id, country;
+
+SELECT DISTINCT country FROM <tablename>;
+
+SELECT DISTINCT country FROM <tablename> ORDER BY country;
+
+SELECT * FROM proper_info WHERE country = 'France';
+
+SELECT * FROM proper_info WHERE country = 'France' AND age = 39;
+
+SELECT * FROM proper_info WHERE country = 'France' AND ( age = 39 OR age = 34 );
+
+SELECT 1 = 1;
+
+SELECT 4 < 3;
+
+SELECT  4 <= 4;
+
+SELECT 3 <> 4 		--------#Not Equal
+
+SELECT 'Karen' = 'Karen'
+
+SELECT * FROM proper_info LIMIT 10;
+
+SELECT * FROM proper_info OFFSET 5 LIMIT 5;
+
+SELECT * FROM proper_info OFFSET 5 FETCH FIRST 5 ROW ONLY;		---(sql standard)
+
+SELECT * FROM proper_info WHERE country IN ('India', 'France', 'Poland', Nigeria) ORDER BY country;
+
+SELECT * FROM proper_info WHERE date_of_birth BETWEEN DATE '2020-06-06' AND '2021-02-11';
+
+SELECT * FROM proper_info WHERE last_name LIKE '%ne';		--#has stuff in front
+
+SELECT * FROM proper_info WHERE last_name LIKE '%si%' ;	--#has stuff front and end
+
+SELECT * FROM proper_info WHERE lastname LIKe '____a%' ; 	--#has $ letters in front of a
+
+SELECT * FROM proper_info WHERE country LIKE 'P%' ;
+
+SELECT country, COUNT(*) FROM proper_info GROUP BY country ORDER BY country ;
+
+SELECT country, COUNT(*) FROM proper_info GROUP BY country HAVING COUNT(*) <= 50 ORDER BY country ;
+
+ stuff like COUNT(*) are called aggregate functions
+
+
+SELECT MAX(price) FROM car;
+
+SELECT AVG(price) FROM car;
+
+SELECT ROUND(AVG(price) FROM car;
+
+SELECT make, model MIN(price) FROM car GROUP BY make, model;
+
+SELECT make ROUND(MIN(price)) FROM car GROUP BY make;
+
+SELECT make, SUM(price) FROM car GROUP BY make ;
+
+SELECT 10 + 2;
+
+SELECT 10 * 2 - 4;
+
+SELECT 10 ^ 2;
+
+SELECT 7!;
+
+SELECT 10 % 3;
+
+SELECT id, make, model, price, ROUND(price * .10,2) FROM car
+
+SELECT id, make, model, price, ROUND(price * .10,2), ROUND(price - (price * .10)) FROM car
+
+SELECT id, make, model, price AS original_price, ROUND(price * .10,2) AS discount, ROUND(price - (price * .10)) AS payable_value FROM car
+
+SELECT COALESCE(country, 'No Country Added') FROM proper_info;
+
+SELECT NULLIF(10,10);
+
+SELECT COALESCE(10 / NULLIF(0,0), 69);
+
+SELECT NOW()
+
+SELECT NOW()::TIME;
+
+SELECT NOW()::DATE;
+
+SELECT NOW() - INTERVAL '1 YEAR'
+
+SELECT NOW() - INTERVAL '10 YEARS'
+
+SELECT NOW() + INTERVAL '10 MONTHS'
+
+SELECT NOW()::DATE - INTERVAL '1 YEAR'
+
+SELECT ( NOW() - INTERVAL '1 YEAR')::DATE;
+
+SELECT EXTRACT( DAY FROM NOW());
+
+SELECT first_name, last_name, country, date_of_birth, AGE(NOW(), date_of_birth) AS age_of_person FROM proper_info
+
+ALTER TABLE proper_info DROP CONSTRAINT proper_info_pkey; 	--(you can then duplicate keys)
+
+ALTER TABLE proper_inffo ADD PRIMARY KEY (id);
+
+SELECT date_of_birth, COUNT(*) FROM proper_info GROUP BY date_of_birth;
+
+DELETE FROM proper_info WHERE id = 2565;
+
+ALTER TABLE proper_info ADD CONSTRAINT unique_email_address UNIQUE (email);
+
+ALTER TABLE proper_info DROP CONSTRAINT unique_email_address;
+
+ALTER TABLE proper_info ADD UNIQUE (email);
+
+DELETE FROM proper_info WHERE email = 'someid@example.com';
+
+ALTER TABLE proper_info ADD CONSTRAINT some_constraint CHECK (gender = 'Male' or gender = 'Female' );
+
+DELETE FROM proper_info WHERE id = 234;
+
+DELETE FROM proper_info WHERE country = 'Poland' AND date_of_birth = '1995-02-22';
+
+UPDATE proper_info SET email = 'cocaine@gmail.com' WHERE id = 69;
+
+UPDATE proper_info SET country = 'Chinaaaaaaaaaaa' WHERE country = 'China';
+
+UPDATE proper_info SET first_name = 'Juggs', last_name = 'Mcbulge', country = 'Lithuania' WHERE id = 56;
+
+INSERT INTO proper_info (id, first_name, last_name, date_of_birth, age, country) VALUES (69, 'Juggs', 'Mcbulge', DATE '1923-01-30', 22, 'Atlantis') ON CONFLICT (id) DO NOTHING;	---needs unique column
+
+INSERT INTO proper_info (id, first_name, last_name, date_of_birth, email, country) VALUES (33, 'Josh', 'Joshua', DATE '1921-03-22', pooseyslayer44@example.com, 'Lincoln') ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email;		----checks and updates on conflict
+
+INSERT INTO proper_info (id, first_name, last_name, country, age) VALUES (12, 'Samwell', 'Tarley', 34) ON CONFLICT (id) DO UPDATE SET last_name = EXCLUDED.last_name, first_name = EXCLUDED.first_name, country = EXCLUDED.country;
+
+UPDATE mainperson SET vehicle_num = 2 WHERE id = 1;		--change value where id is 1
+
+SELECt * FROM mainperson JOIN vehicle ON mainperson.vehicle_num = vehicle.id;
+
+\x
+
+SELECT mainperson.first_name, vehicle.make, vehicle.model FROM mainperson JOIN vehicle ON mainperson.vehicle_num = vehicle.id;
+
+SELECT * FROM mainperson LEFT JOIN vehicle ON vehicle.id = mainperson.vehicle_num;	---left joint, includes values of records that are not a part 
+
+SELECT * FROM mainperson WHERE vehicle_num IS NULL;
+
+SELECT * FROM mainperson WHERE LEFT JOIN vehicle ON vehicle.id = mainperson.vehicle_num WHERE vehicle.* IS NULL;
+
+(you cant delete reference keys that maybe linked to ana naother table)
+
+DELETE FROM vehicle WHERE id =3;  		---can only be done if there are no reference keys to it
+
+\copy (SELECT * FROM mainperson WHERE LEFT JOIN vehicle ON mainperson.vehicle_num = vehicle.id) TO '/Users/gg/Downloads/sqqqqq/results.csv' DELIMITER '.' CSV HEADER;
+
+SELECT * FROM mainperson_id_seq;
+
+SELECT * FROM next_val('mainperson_id_seq'::regclass);
+
+ALTER SEQUENCE mainperson_id_seq RESTART WITH 10;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+SELECT * FROM pg_available_extensions;
+
+\df 
+
+SELECT uuid_generate_v4();
+
+SELECT * FROM secureperson JOIN securecar ON secureperson.securecar_uid = securecar.securecar_uid;
+
+SELECT * FROM secureperson JOIN securecar USING (securecar_uid);
+
+

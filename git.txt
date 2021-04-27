@@ -1,0 +1,33 @@
+git init
+git remote add origin <link>
+git remote -v
+git add .  		----#staging area
+git rm --cached <filename>
+git reset
+git checkout -b <newbranch>
+git checkout <branch name>
+git push origin master 	 ----#specify what branch to push to
+git push -u origin master 	----#to set default upstream 
+git commit -m "message1" -m "somedescription"
+git clone <link>
+git status
+git branch
+git diff <branch name>
+git push --set-upstream origin new branch	----# -u is the short hand
+git pull 			-----# upstream set to origin master
+git branch -d <branch name>
+git diff
+git commit -am "message"
+git merge master 		----#try merging master since branchin too far isnt good
+git reset HEAD~1		----#undo's a commit (unstages and uncommits)
+git log
+git reset <commit hash>	----#resets and unstages
+git reset --hard <commit hash>
+
+(stashing is a holding place without commiting)
+
+
+ssh-keygen -t rsa -b 4096 -C "emailid"
+eval "$(ssh-agent -s)"
+ssh-add -K <key name with location>
+
