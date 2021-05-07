@@ -1,0 +1,137 @@
+use dolan
+
+db.createCollection("Stonks")
+db.students.insertOne({name:"Tommy", GPA:2.7, major:"Business"})
+db.students.insertMany([{name:"CJ",GPA:6.7, major:"Automobile"}, {name:"Diaz", major:"Pharma", GPA:2.2}])
+
+db.students.find({})
+db.students.find({}, {_id : 0})                         #restrict ID
+db.students.find({}, {_id: 0}).limit(3)                 #set limit
+db.students.find({}, {_id: 0}).sort({name:1})           #sort alphebetically by name
+db.students.find({}, {_id: 0}).sort({GPA:-1, name:1})   #for descending GPA
+
+db.students.find({major: "mechs"}, {_id : 0})           #to find someone with major
+db.students.find({$or: [{major:"plumbing"}, {name:"Evan"}]}, {_id: 0})      #find by or logic, do put in array
+
+
+db.students.find({GPA: {$gt: 3.4}}, {_id: 0})           #greater than
+
+db.students.find({GPA:{$lte:4.0}},{_id:0})              #less than equal
+
+db.students.find({GPA:{$lte:5.0}},{_id:0}).sort({GPA:-1})   #sort by descending
+
+$eq - equal
+$ne - not equal
+$lt - less than
+$lte - less than equal
+$gt - greater than
+$gte - greater than equal
+
+db.students.find({name: {$in:["Clara","Duke"]}}, {_id:0})   #to select multiple
+
+$nin - not in
+
+db.students.find({awards:{$exists:true}}, {_id:0})      #check for existence
+
+db.students.find({name:{$type:2}}, {_id:0})     #bson object type
+
+
+db.students.find({"grade.0":78}, {_id:0})       #first element of the array
+db.students.find({"grade.2":89}, {_id:0})       #corresponds to index value
+
+db.students.find({grade: {$elemMatch:{$gte:80}}}, {_id:0}) #elem macth greater than 80
+
+db.students.find({grade:{$size:3} }, {_id:0})   #checks for array size
+
+--
+
+db.students.updateOne({major:"Electronics"}, {$set:{major:"Science"}})          #modified
+
+db.students.updateMany({major:"Science"}, {$set:{major:"Electronics"}})     #modify many
+
+db.students.replaceOne({major:"Electronics"},{name:"Juggs Mcbulge", major:"Mathematics", GPA:6.9})
+
+db.students.deleteMany({})      #will delete everything
+
+db.students.deleteMany({gpa:{$gte:5.0}})     #delete anything greater than 5.0
+
+db.students.deleteOne({major:"Biology"})
+
+db.students.bulkWrite(
+    [
+        {insertOne:{"document": {name:"Terry", major:"Counselling", GPA:4.3}}},
+        {insertOne:{"document":{name:"Mathew", major:"Teaching", GPA:3.2}}},
+        {updateOne:{
+            filter:{name:"Terry"},
+            update:{$set:{GPA:9.9}}}},
+        {deleteOne:{
+            filter:{name:"Clara"}}},
+        {replaceOne:{
+            filter:{name:"Mario"},
+            replacement:{name:"Lara",major:"Wildlife Welfare", GPA:3.3}}}
+    ])
+
+db.stores.insertMany(
+    [
+        {_id:1, name:"Starbucks",description:"Coffee and Cakes"},
+        {_id:2, name:"Tim Hortons", description:"Drinks and Coffee"},
+        {_id:3, name:"Java", description:"Tea and Bsicuits"},
+        {_id:4, name:"Clothes Clothes Clothes",description:"plenty of clothes"},
+        {_id:5, name:"Coffee Shop", description:"just Coffee"}
+    ])
+
+db.stores.createIndex({name:"text", description:"text"})     #creating indexes on both fields
+
+db.stores.find({$text:{$search:"coffee"}})
+
+db.stores.find({$text:{$search:"Java hut shop"}})
+
+db.stores.find({$text:{$search:"Java hut shop"}},{score:{$meta:"textScore"}} )      #score means close to searcg value
+
+db.stores.find({$text:{$search:"Java hut shop drinks"}},{score:{$meta:"textScore"}}).sort({score:{$meta:"textScore"}})      #sorts by score value which has be described later independently
+
+
+--Aggregation--
+
+db.purchase_orders.insertMany(
+     [
+          {product: "toothbrush", total: 4.75, customer: "Mike"},
+          {product: "guitar", total: 199.99, customer: "Tom"},
+          {product: "milk", total: 11.33, customer: "Mike"},
+          {product: "pizza", total: 8.50, customer: "Karen"},
+          {product: "toothbrush", total: 4.75, customer: "Karen"},
+          {product: "pizza", total: 4.75, customer: "Dave"},
+          {product: "toothbrush", total: 4.75, customer: "Mike"},
+     ]
+)
+ // find out number of toothbrushes sold
+
+db.purchase_orders.count({product:"toothbrush"})        #straightforwards innit?
+
+// find list of products sold
+
+db.purchase_orders.distinct("product")
+
+// total amount of money spent by each customer
+
+db.purchase_orders.aggregate([
+    {$match:{}},                                    #filter, leave opening closing for all
+    {$group:{_id:"$customer", total:{$sum:"$total"}}}   #aggregating the values
+])
+
+db.purchase_orders.aggregate([
+    {$match:{}},
+    {$group:{_id:"$product", penis:{$sum:"$total"}}}
+])
+
+db.purchase_orders.aggregate([
+    {$match:{}},
+    {$group:{_id:"$product", penis:{$sum:"$total"}}},
+    {$sort:{penis:-1}}
+])
+
+db.purchase_orders.aggregate([
+    {$match:{customer: {$in:["Mike","Karen"]}}},
+    {$group:{_id:"$customer", penis:{$sum:"$total"}}},
+    {$sort:{penis:-1}}
+])
