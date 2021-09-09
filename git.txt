@@ -17,7 +17,7 @@ git push --set-upstream origin new branch	----# -u is the short hand
 git pull 			-----# upstream set to origin master
 git branch -d <branch name>
 git diff
-git commit -am "message"
+git commit -am "message" ----commit and add all
 git merge master 		----#try merging master since branchin too far isnt good
 git reset HEAD~1		----#undo's a commit (unstages and uncommits)
 git log
@@ -30,4 +30,37 @@ git reset --hard <commit hash>
 ssh-keygen -t rsa -b 4096 -C "emailid"
 eval "$(ssh-agent -s)"
 ssh-add -K <key name with location>
+
+git config --global alias.ac "commit -am"
+git ac "noice"
+
+git commit --amend -m "nice"   ----changes commit message
+
+git push origin master --force
+
+git revert b4f4098      ---undocommits
+
+git stash       ----stash current changes
+git stash pop
+git stash save nameforlettererefeence
+git stash list
+git stash apply nameofstashedfile
+
+git branch -M newmain
+
+git log  --graph --oneline --decorate
+
+git rebase master --interactive
+
+git fetch origin
+git reset --hard origin/master
+git clean -df
+
+rm -rf git
+
+git checkout -
+
+
+
+
 
